@@ -105,7 +105,11 @@ class Job_FreshService:
             log.warning(f"Processing page {page}")
             lookup = requests.get(
                 "https://bink.freshservice.com/api/v2/tickets",
-                params={"page": page, "per_page": 100, "updated_since": date.today() - timedelta(days=self.days)},
+                params={
+                    "page": page,
+                    "per_page": 100,
+                    "updated_since": date.today() - timedelta(days=self.days, hours=1),
+                },
                 auth=(self.api_key, "X"),
             )
             if lookup.status_code == 429:

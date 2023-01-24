@@ -23,7 +23,7 @@ class Deploy_EventProcessor:
             try:
                 with pika.BlockingConnection(pika.URLParameters(self.rabbitmq_dsn)) as conn:
                     channel = conn.channel()
-                    for queue in self.queue_names.split(','):
+                    for queue in self.queue_names.split(","):
                         channel.basic_consume(
                             queue=queue,
                             on_message_callback=self.process_event,

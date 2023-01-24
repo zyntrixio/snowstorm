@@ -33,7 +33,7 @@ def deploy():
 
 @job.command(name="apistats")
 @click.option("-r", "--retries", default=10, help="Number of retries to execute on failure", show_default=True)
-@click.option("-d", "--days", default=25, help="Number of hours worth of logs to collect", show_default=True)
+@click.option("-d", "--days", default=1, help="Number of days worth of logs to collect", show_default=True)
 @click.option("-d", "--domain", default="api.gb.bink.com", help="Domain to use for log collection", show_default=True)
 def apistats(retries: int, days: int, domain: str):
     """
@@ -55,7 +55,7 @@ def create_events(queue: str, count: int):
 
 
 @job.command(name="freshservice")
-@click.option("-d", "--days", default=2, help="Days worth of tickets to collect", show_default=True)
+@click.option("-d", "--days", default=1, help="Days worth of tickets to collect", show_default=True)
 @click.option("-s", "--rate_limit_timeout", default=60, help="Seconds to sleep after rate limit", show_default=True)
 def freshservice(days: int, rate_limit_timeout: str):
     """
