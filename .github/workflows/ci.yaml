@@ -72,7 +72,7 @@ jobs:
           context: .
           platforms: linux/amd64, linux/arm64
           tags: |
-            binkcore.azurecr.io/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}
+            binkcore.azurecr.io/${{ github.event.repository.name }}:staging-${{ github.event.release.tag_name }}
             binkcore.azurecr.io/${{ github.event.repository.name }}:staging
 
   release_production:
