@@ -76,12 +76,12 @@ def cleanup(days: int):
 
 
 @deploy.command(name="events")
-@click.option("-q", "--queue", default="snowstorm_test", help="Queue to consume from", show_default=True)
-def event_processor(queue: str):
+@click.option("-q", "--queues", default="snowstorm_test", help="Queues to use, comma seperated", show_default=True)
+def event_processor(queues: str):
     """
     Collects Olympus Events from RabbitMQ
     """
-    event_processor = Deploy_EventProcessor(queue=queue)
+    event_processor = Deploy_EventProcessor(queues=queues)
     event_processor.get_messages()
 
 

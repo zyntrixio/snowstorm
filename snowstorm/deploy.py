@@ -14,20 +14,21 @@ log = logging.getLogger(__name__)
 
 
 class Deploy_EventProcessor:
-    def __init__(self, queue: str) -> None:
+    def __init__(self, queues: str) -> None:
         self.rabbitmq_dsn = settings.rabbitmq_dsn
-        self.queue_name = queue
+        self.queue_names = queues
 
     def get_messages(self) -> None:
         while True:
             try:
                 with pika.BlockingConnection(pika.URLParameters(self.rabbitmq_dsn)) as conn:
                     channel = conn.channel()
-                    channel.basic_consume(
-                        queue=self.queue_name,
-                        on_message_callback=self.process_event,
-                        auto_ack=False,
-                    )
+                    for queue in self.queue_names.split(','):
+                        channel.basic_consume(
+                            queue=queue,
+                            on_message_callback=self.process_event,
+                            auto_ack=False,
+                        )
                     try:
                         channel.start_consuming()
                     except KeyboardInterrupt:
@@ -46,6 +47,7 @@ class Deploy_EventProcessor:
     def process_event(
         self, ch: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, message: bytes
     ) -> None:
+        logging.warning("Processing event", extra={"queue_name": method.routing_key})
         try:
             raw_msg = json.loads(message.decode())
             event_date_time = raw_msg.pop("event_date_time")
