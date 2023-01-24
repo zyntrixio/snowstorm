@@ -73,7 +73,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
           tags: |
             binkcore.azurecr.io/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}
-            binkcore.azurecr.io/${{ github.event.repository.name }}:latest
+            binkcore.azurecr.io/${{ github.event.repository.name }}:staging
 
   release_production:
     if: github.event_name == 'release' && github.event.action == 'published'
