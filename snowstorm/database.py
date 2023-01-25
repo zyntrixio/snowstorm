@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, create_engine
+from sqlalchemy import JSON, Boolean, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base
 
 from snowstorm.settings import settings
@@ -32,6 +32,7 @@ class FreshService(base):
     channel = Column(String, nullable=True)
     service = Column(String, nullable=True)
     mi = Column(String, nullable=True)
+    sla_breached = Column(Boolean, nullable=True)
 
 
 class Events(base):
