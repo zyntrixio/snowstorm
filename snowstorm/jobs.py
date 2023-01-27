@@ -36,7 +36,7 @@ class Job_APIStats:
         | where requestUri_s startswith "https://{self.domain}:443/ubiquity"
              or requestUri_s startswith "https://{self.domain}:443/v2"
         | extend path = replace_regex(
-            replace_regex(tostring(parse_url(requestUri_s)["Path"]), @"hash-.+", @"{{id}}"), @"/\\d+", @"{{id}}")
+            replace_regex(tostring(parse_url(requestUri_s)["Path"]), @"hash-.+", @"{{id}}"), @"/\\d+", @"/{{id}}")
         | project
             _ItemId,
             TimeGenerated,
