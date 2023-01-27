@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base
 
 from snowstorm.settings import settings
 
-engine = create_engine(settings.database_dsn)
+engine = create_engine(settings.database_dsn, echo=False)
 base = declarative_base()
 
 
@@ -20,6 +20,17 @@ class APIStats(base):
     client_ip = Column(String)
     ms_pop = Column(String)
     client_country = Column(String)
+
+
+class APIStats_Summary(base):
+    __tablename__ = "apistats_summary"
+
+    date = Column(DateTime, primary_key=True)
+    p50 = Column(Float)
+    p95 = Column(Float)
+    p99 = Column(Float)
+    calls = Column(Integer)
+    calls_by_status_code = Column(JSON)
 
 
 class FreshService(base):

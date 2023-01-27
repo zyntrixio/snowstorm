@@ -1,9 +1,10 @@
 import logging
 
 import click
+import pendulum
 
 from snowstorm.deploy import Deploy_EventProcessor
-from snowstorm.jobs import Job_APIStats, Job_DatabaseCleanup, Job_EventCreate, Job_FreshService
+from snowstorm.jobs import Job_APIStats, Job_APIStats_Summary, Job_DatabaseCleanup, Job_EventCreate, Job_FreshService
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +42,17 @@ def apistats(retries: int, days: int, domain: str):
     """
     apistats = Job_APIStats(retries=retries, days=days, domain=domain)
     apistats.store_logs()
+
+
+@job.command(name="apistats_summary")
+@click.option("-d", "--date", help="Collect stats for a specific date, format: YYYY-MM-DD")
+def apistats_summary(date):
+    """
+    Collects API Stats from Log Analytics
+    """
+    start_date = pendulum.parse(date) if date else pendulum.yesterday("UTC")
+    apistats = Job_APIStats_Summary(start_date=start_date)
+    apistats.run()
 
 
 @job.command(name="create_events")

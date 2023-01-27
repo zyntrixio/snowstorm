@@ -1,20 +1,20 @@
 import json
 import logging
-from datetime import date, timedelta
 from random import choice, randint
 from time import sleep
 
+import pendulum
 import pika
 import requests
 from azure.core.exceptions import ServiceResponseError
 from azure.identity import DefaultAzureCredential
-from azure.monitor.query import LogsQueryClient, LogsQueryStatus
+from azure.monitor.query import LogsQueryClient, LogsQueryStatus, LogsQueryResult
 from faker import Faker
 from faker.providers import internet
 from sqlalchemy.orm import Session
 
 from snowstorm import leader_election
-from snowstorm.database import APIStats, Events, FreshService, engine
+from snowstorm.database import APIStats, Events, FreshService, APIStats_Summary, engine
 from snowstorm.settings import settings
 
 log = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class Job_APIStats:
             try:
                 log.warning(f"Running query, attempt {retry} of {self.retries}")
                 response = client.query_workspace(
-                    workspace_id=self.workspace_id, query=query, timespan=timedelta(days=self.days, hours=1)
+                    workspace_id=self.workspace_id, query=query, timespan=pendulum.duration(days=self.days, hours=1)
                 )
             except ServiceResponseError:
                 log.warning("Failed, probably retrying")
@@ -89,6 +89,50 @@ class Job_APIStats:
             session.commit()
 
 
+class Job_APIStats_Summary:
+    def __init__(self, start_date: pendulum.DateTime) -> None:
+        self.workspace_id = settings.workspace_id
+        self.start_date = start_date
+        self.end_date = self.start_date.add(days=1)
+        self.credential = DefaultAzureCredential()
+        self.client = LogsQueryClient(self.credential)
+
+    def run_query(self, query: str) -> LogsQueryResult:
+        req = self.client.query_workspace(
+            workspace_id=self.workspace_id, query=query, timespan=(self.start_date, self.end_date)
+        )
+        return req.tables[0].rows
+
+    def run(self):
+        percentiles_query = """
+        AzureDiagnostics
+        | where Category == "FrontDoorAccessLog"
+        | where requestUri_s startswith "https://api.gb.bink.com:443/v2"
+        | summarize percentiles(todouble(timeTaken_s), 50, 95, 99)
+        """
+        percentiles = self.run_query(percentiles_query)[0]
+        status_codes_query = """
+        AzureDiagnostics
+        | where Category == "FrontDoorAccessLog"
+        | where requestUri_s startswith "https://api.gb.bink.com:443/v2"
+        | summarize count() by httpStatusCode_d
+        """
+        status_codes = {k: v for (k, v) in self.run_query(status_codes_query)}
+        total_calls = sum(status_codes.values())
+        data = {
+            "date": self.start_date,
+            "p50": round(percentiles[0], 3),
+            "p95": round(percentiles[1], 3),
+            "p99": round(percentiles[2], 3),
+            "calls": total_calls,
+            "calls_by_status_code": status_codes,
+        }
+        with Session(engine) as session:
+            insert = APIStats_Summary(**data)
+            session.merge(insert)
+            session.commit()
+
+
 class Job_FreshService:
     def __init__(self, days: int, rate_limit_timeout: int) -> None:
         self.status_mapping = {2: "Open", 3: "Pending", 4: "Resolved", 5: "Closed"}
@@ -108,7 +152,7 @@ class Job_FreshService:
                 params={
                     "page": page,
                     "per_page": 100,
-                    "updated_since": date.today() - timedelta(days=self.days, hours=1),
+                    "updated_since": pendulum.today().subtract(days=1, hours=1),
                 },
                 auth=(self.api_key, "X"),
             )
@@ -148,7 +192,7 @@ class Job_DatabaseCleanup:
     def cleanup(self) -> None:
         if not leader_election(job_name="database_cleanup"):
             return None
-        delta = date.today() - timedelta(days=self.days)
+        delta = pendulum.today().subtract(days=self.days)
         with Session(engine) as session:
             apistats = session.query(APIStats).filter(APIStats.date_time <= delta)
             logging.warning("apistats records found", extra={"record_count": apistats.count()})
@@ -178,7 +222,7 @@ class Job_EventCreate:
             channel = conn.channel()
             channel.queue_declare(queue=self.queue_name)
             for _ in range(self.message_count):
-                event_date_time = date.today() - timedelta(
+                event_date_time = pendulum.today().subtract(
                     days=randint(0, 1000),
                     hours=randint(0, 24),
                     minutes=randint(0, 60),
