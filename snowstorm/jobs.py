@@ -8,13 +8,13 @@ import pika
 import requests
 from azure.core.exceptions import ServiceResponseError
 from azure.identity import DefaultAzureCredential
-from azure.monitor.query import LogsQueryClient, LogsQueryStatus, LogsQueryResult
+from azure.monitor.query import LogsQueryClient, LogsQueryResult, LogsQueryStatus
 from faker import Faker
 from faker.providers import internet
 from sqlalchemy.orm import Session
 
 from snowstorm import leader_election
-from snowstorm.database import APIStats, Events, FreshService, APIStats_Summary, engine
+from snowstorm.database import APIStats, APIStats_Summary, Events, FreshService, engine
 from snowstorm.settings import settings
 
 log = logging.getLogger(__name__)
