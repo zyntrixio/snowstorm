@@ -1,0 +1,82 @@
+import logging
+
+import pendulum
+from azure.core.exceptions import ServiceResponseError
+from azure.identity import DefaultAzureCredential
+from azure.monitor.query import LogsQueryClient, LogsQueryStatus
+from sqlalchemy.orm import Session
+
+from snowstorm import leader_election
+from snowstorm.database import APIStats, engine
+from snowstorm.settings import settings
+
+log = logging.getLogger(__name__)
+
+
+class Job_APIStats:
+    def __init__(self, retries: int, days: int, domain: str) -> None:
+        self.workspace_id = settings.workspace_id
+        self.domain = domain
+        self.retries = retries
+        self.days = days
+
+    def fetch_logs(self) -> list:
+        credential = DefaultAzureCredential()
+        client = LogsQueryClient(credential)
+        query = f"""
+        AzureDiagnostics
+        | where Category == "FrontDoorAccessLog"
+        | where requestUri_s startswith "https://{self.domain}:443/ubiquity"
+             or requestUri_s startswith "https://{self.domain}:443/v2"
+        | extend path = replace_regex(
+            replace_regex(tostring(parse_url(requestUri_s)["Path"]), @"hash-.+", @"{{id}}"), @"/\\d+", @"/{{id}}")
+        | project
+            _ItemId,
+            TimeGenerated,
+            httpMethod_s,
+            path,
+            httpStatusCode_d,
+            timeTaken_s,
+            userAgent_s,
+            clientIp_s,
+            pop_s,
+            clientCountry_s
+        """
+        for retry in range(self.retries):
+            try:
+                log.warning(f"Running query, attempt {retry} of {self.retries}")
+                response = client.query_workspace(
+                    workspace_id=self.workspace_id, query=query, timespan=pendulum.duration(days=self.days, hours=1)
+                )
+            except ServiceResponseError:
+                log.warning("Failed, probably retrying")
+                continue
+            if response.status == LogsQueryStatus.PARTIAL:
+                log.warning("Failed, probably retrying")
+                continue
+            elif response.status == LogsQueryStatus.SUCCESS:
+                return response.tables[0].rows
+
+    def store_logs(self) -> None:
+        if not leader_election(job_name="apistats"):
+            return None
+        logs = self.fetch_logs()
+        log_count = len(logs)
+        with Session(engine) as session:
+            for iteration, element in enumerate(logs, 1):
+                if iteration % 100 == 0 or iteration == log_count:
+                    logging.warning(f"Inserting Record {iteration} of {log_count}")
+                insert = APIStats(
+                    id=element[0],
+                    date_time=element[1],
+                    method=element[2],
+                    path=element[3],
+                    status_code=element[4],
+                    response_time=element[5],
+                    user_agent=element[6],
+                    client_ip=element[7],
+                    ms_pop=element[8],
+                    client_country=element[9],
+                )
+                session.merge(insert)
+            session.commit()

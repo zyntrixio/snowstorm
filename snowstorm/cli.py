@@ -1,10 +1,14 @@
 import logging
 
 import click
-import pendulum
+import uvicorn
 
-from snowstorm.deploy import Deploy_EventProcessor
-from snowstorm.jobs import Job_APIStats, Job_APIStats_Summary, Job_DatabaseCleanup, Job_EventCreate, Job_FreshService
+from snowstorm.deployments.event_processor import Deploy_EventProcessor
+from snowstorm.jobs.apistats import Job_APIStats
+from snowstorm.jobs.database_cleanup import Job_DatabaseCleanup
+from snowstorm.jobs.events import Job_EventCreate
+from snowstorm.jobs.freshservice import Job_FreshService
+from snowstorm.mi.lloyds_notification import Notification_Lloyds
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +27,7 @@ def job():
     """
     Tasks designed to be executed as Kubernetes CronJobs
     """
+    pass
 
 
 @cli.group()
@@ -30,6 +35,15 @@ def deploy():
     """
     Tasks designed to be executed as Kubernetes Deployments
     """
+    pass
+
+
+@cli.group()
+def mi():
+    """
+    Management Information: Includes Jobs for Stats Collection, Teams Notifications, and a Web Server
+    """
+    pass
 
 
 @job.command(name="apistats")
@@ -42,17 +56,6 @@ def apistats(retries: int, days: int, domain: str):
     """
     apistats = Job_APIStats(retries=retries, days=days, domain=domain)
     apistats.store_logs()
-
-
-@job.command(name="apistats_summary")
-@click.option("-d", "--date", help="Collect stats for a specific date, format: YYYY-MM-DD")
-def apistats_summary(date):
-    """
-    Collects API Stats from Log Analytics
-    """
-    start_date = pendulum.parse(date) if date else pendulum.yesterday("UTC")
-    apistats = Job_APIStats_Summary(start_date=start_date)
-    apistats.run()
 
 
 @job.command(name="create_events")
@@ -95,6 +98,23 @@ def event_processor(queues: str):
     """
     event_processor = Deploy_EventProcessor(queues=queues)
     event_processor.get_messages()
+
+
+@mi.command(name="notification")
+def mi_lloyds_notification():
+    """
+    Send a notification to Microsoft Teams with Lloyds Stats
+    """
+    notification = Notification_Lloyds()
+    notification.send()
+
+
+@mi.command(name="webserver")
+def mi_webserver():
+    """
+    Launch a WebServer on 0.0.0.0:6502 with latest Lloyds Stats
+    """
+    uvicorn.run("snowstorm.mi.webserver:app", host="0.0.0.0", port=6502)
 
 
 if __name__ == "__main__":

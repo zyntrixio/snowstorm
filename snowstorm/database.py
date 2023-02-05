@@ -22,17 +22,6 @@ class APIStats(base):
     client_country = Column(String)
 
 
-class APIStats_Summary(base):
-    __tablename__ = "apistats_summary"
-
-    date = Column(DateTime, primary_key=True)
-    p50 = Column(Float)
-    p95 = Column(Float)
-    p99 = Column(Float)
-    calls = Column(Integer)
-    calls_by_status_code = Column(JSON)
-
-
 class FreshService(base):
     __tablename__ = "freshservice"
 

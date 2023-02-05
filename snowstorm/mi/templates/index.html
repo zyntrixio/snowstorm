@@ -1,0 +1,269 @@
+<html>
+    <head>
+        <title>Bink :: LBG Live Stats</title>
+        <meta http-equiv="refresh" content="30" />
+        <meta charset="UTF-8">
+        <style>
+        .row {
+            display: flex;
+        }
+
+        .column {
+            flex: 33.33%;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        h2 {
+            color: white;
+        }
+
+        body {
+            background-color: rgb(112, 141, 147);
+            font-family: sans-serif;
+            width: auto;
+        }
+
+        p {
+            color: white;
+        }
+
+        table,
+        th,
+        td,
+        tr,
+        thead {
+            width: auto;
+            color: white;
+            text-align: left;
+            align-self: center;
+            min-width: 150px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="column">
+                <h1>Loyalty Cards</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Retailer</th>
+                            <th>Channel</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="3"><b>Active</b></td>
+                        </tr>
+                        {% for key, value in data["loyalty_accounts"]["success"].items() if key != "total" %}
+                        {% for channel in value %}
+                        <tr>
+                            <td>{{ key | title }}</td>
+                            <td>{{ bundle_ids[channel] }}</td>
+                            <td>{{ value[channel] }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td>{{ data["loyalty_accounts"]["success"]["total"] }}</td>
+                        </tr>
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="3"><b>Pending</b></td>
+                        </tr>
+                        {% for key, value in data["loyalty_accounts"]["pending"].items() if key != "total" %}
+                        {% for channel in value %}
+                        <tr>
+                            <td>{{ key | title }}</td>
+                            <td>{{ bundle_ids[channel] }}</td>
+                            <td>{{ value[channel] }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td>{{ data["loyalty_accounts"]["pending"]["total"] }}</td>
+                        </tr>
+
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="3"><b>Failed</b></td>
+                        </tr>
+                        {% for key, value in data["loyalty_accounts"]["failed"].items() if key != "total" %}
+                        {% for channel in value %}
+                        <tr>
+                            <td>{{ key | title }}</td>
+                            <td>{{ bundle_ids[channel] }}</td>
+                            <td>{{ value[channel] }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td></td>
+                            <td>{{ data["loyalty_accounts"]["failed"]["total"] }}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <h1>User Stats</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lloyds</td>
+                            <td>{{ data["users"]["com.lloyds.api2"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Bank of Scotland</td>
+                            <td>{{ data["users"]["com.bos.api2"] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Halifax</td>
+                            <td>{{ data["users"]["com.halifax.api2"] }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td>{{ data["users"]["total"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <h1>Deleted Accounts & Cards</h1>
+                <table>
+                    <thead>
+                        <th>Endpoint</th>
+                        <th>Count</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in data["api_stats"]["deletions"].items() %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <h1>API Stats</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Availability</td>
+                            <td>{{ data["checkly"] }}%</td>
+                        </tr>
+                        <tr>
+                            <td>Total Calls</td>
+                            <td>{{ data["api_stats"]["calls"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <th>Percentile</th>
+                        <th>Value</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in data["api_stats"]["percentiles"].items() %}
+                        <tr>
+                            <td>{{ key | upper }}</td>
+                            <td>{{ "%0.3f" | format(value | float) }}s</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                    <table>
+                    <thead>
+                        <th>Status Code</th>
+                        <th>Count</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in data["api_stats"]["status_codes"].items() %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <h1>Payment Cards</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="2"><b>Active</b></td>
+                        </tr>
+                        {% for key, value in data["payment_accounts"]["success"].items() if key != "total" %}
+                        <tr>
+                            <td>{{ bundle_ids[key] }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td>{{ data["payment_accounts"]["success"]["total"] }}</td>
+                        </tr>
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="2"><b>Pending</b></td>
+                        </tr>
+                        {% for key, value in data["payment_accounts"]["pending"].items() if key != "total" %}
+                        <tr>
+                            <td>{{ bundle_ids[key] }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td>{{ data["payment_accounts"]["pending"]["total"] }}</td>
+                        </tr>
+                        <tr><td><br /></td></tr>
+                        <tr>
+                            <td colspan="2"><b>Failed</b></td>
+                        </tr>
+                        {% for key, value in data["payment_accounts"]["failed"].items() if key != "total" %}
+                        <tr>
+                            <td>{{ bundle_ids[key] }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><b>Total</b></td>
+                            <td>{{ data["payment_accounts"]["failed"]["total"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+            </div>
+          </div>
+    </body>
+</html>
