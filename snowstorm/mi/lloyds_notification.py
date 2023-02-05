@@ -2,6 +2,9 @@ import requests
 
 from snowstorm import leader_election
 from snowstorm.mi.lloyds_stats import MI_LloydsStats
+from snowstorm.settings import settings
+
+token = settings.webserver_auth_token
 
 
 class Notification_Lloyds:
@@ -123,7 +126,7 @@ class Notification_Lloyds:
                                                 "type": "Action.OpenUrl",
                                                 "id": "b528d37b-a513-c7cf-014a-bc8004efb4f5",
                                                 "title": "Open Dashboard",
-                                                "url": "https://stats.gb.bink.com/lbg",
+                                                "url": f"https://stats.gb.bink.com/lbg?auth={token}",
                                             }
                                         ],
                                     }
