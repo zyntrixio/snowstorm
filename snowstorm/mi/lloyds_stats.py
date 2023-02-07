@@ -208,6 +208,7 @@ class MI_LloydsStats:
         AzureDiagnostics
         | where Category == "FrontDoorAccessLog"
         | where requestUri_s startswith "https://api.gb.bink.com:443/v2"
+        | where userAgent_s startswith "Apache-HttpClient"
         | summarize percentiles(todouble(timeTaken_s), 50, 95, 99)
         """
         percentiles = self.run_la_query(percentiles_query)[0]
@@ -216,6 +217,7 @@ class MI_LloydsStats:
         AzureDiagnostics
         | where Category == "FrontDoorAccessLog"
         | where requestUri_s startswith "https://api.gb.bink.com:443/v2"
+        | where userAgent_s startswith "Apache-HttpClient"
         | summarize count() by httpStatusCode_d
         """
         status_codes = {k: v for (k, v) in self.run_la_query(status_codes_query)}
@@ -227,6 +229,7 @@ class MI_LloydsStats:
             AzureDiagnostics
             | where Category == "FrontDoorAccessLog"
             | where requestUri_s startswith "https://api.gb.bink.com:443{endpoint}"
+            | where userAgent_s startswith "Apache-HttpClient"
             | where httpMethod_s == "DELETE"
             | summarize count()
             """
