@@ -20,7 +20,7 @@ class Job_APIStats:
         self.retries = retries
         self.days = days
 
-    def fetch_logs(self) -> list:
+    def fetch_logs(self, start_date: pendulum.DateTime, end_date: pendulum.DateTime) -> list:
         credential = DefaultAzureCredential()
         client = LogsQueryClient(credential)
         query = f"""
@@ -46,13 +46,13 @@ class Job_APIStats:
             try:
                 log.warning(f"Running query, attempt {retry} of {self.retries}")
                 response = client.query_workspace(
-                    workspace_id=self.workspace_id, query=query, timespan=pendulum.duration(days=self.days, hours=1)
+                    workspace_id=self.workspace_id, query=query, timespan=(start_date, end_date)
                 )
             except ServiceResponseError:
-                log.warning("Failed, probably retrying")
+                log.warning("Service Response Error")
                 continue
             if response.status == LogsQueryStatus.PARTIAL:
-                log.warning("Failed, probably retrying")
+                log.warning("Partial Results, Retrying")
                 continue
             elif response.status == LogsQueryStatus.SUCCESS:
                 return response.tables[0].rows
@@ -60,23 +60,26 @@ class Job_APIStats:
     def store_logs(self) -> None:
         if not leader_election(job_name="apistats"):
             return None
-        logs = self.fetch_logs()
-        log_count = len(logs)
-        with Session(engine) as session:
-            for iteration, element in enumerate(logs, 1):
-                if iteration % 100 == 0 or iteration == log_count:
-                    logging.warning(f"Inserting Record {iteration} of {log_count}")
-                insert = APIStats(
-                    id=element[0],
-                    date_time=element[1],
-                    method=element[2],
-                    path=element[3],
-                    status_code=element[4],
-                    response_time=element[5],
-                    user_agent=element[6],
-                    client_ip=element[7],
-                    ms_pop=element[8],
-                    client_country=element[9],
-                )
-                session.merge(insert)
-            session.commit()
+        for day in range(self.days):
+            start_date = pendulum.today().subtract(days=day, hours=1)
+            end_date = start_date.add(days=1, hours=1)
+            logs = self.fetch_logs(start_date=start_date, end_date=end_date)
+            log_count = len(logs)
+            with Session(engine) as session:
+                for iteration, element in enumerate(logs, 1):
+                    if iteration % 100 == 0 or iteration == log_count:
+                        logging.warning(f"Inserting Record {iteration} of {log_count}")
+                    insert = APIStats(
+                        id=element[0],
+                        date_time=element[1],
+                        method=element[2],
+                        path=element[3],
+                        status_code=element[4],
+                        response_time=element[5],
+                        user_agent=element[6],
+                        client_ip=element[7],
+                        ms_pop=element[8],
+                        client_country=element[9],
+                    )
+                    session.merge(insert)
+                session.commit()
