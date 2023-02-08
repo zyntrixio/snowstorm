@@ -249,6 +249,45 @@ class MI_LloydsStats:
         return results
 
     def run(self) -> dict:
+        if settings.demo_mode:
+            return {
+                "users": {"com.bos.api2": 6, "com.halifax.api2": 9, "com.lloyds.api2": 284, "total": 299},
+                "checkly": 99,
+                "api_stats": {
+                    "percentiles": {"p50": 0.037, "p95": 0.132, "p99": 0.379},
+                    "calls": 2194,
+                    "status_codes": {200: 1754, 201: 357, 202: 60, 499: 1, 422: 19, 400: 3},
+                    "deletions": {"/v2/me": 6, "/v2/loyalty_cards": 15, "/v2/payment_accounts": 0},
+                },
+                "loyalty_accounts": {
+                    "success": {
+                        "iceland": {"com.bos.api2": 1, "com.halifax.api2": 1, "com.lloyds.api2": 8},
+                        "squaremeal": {"com.bos.api2": 2, "com.halifax.api2": 1, "com.lloyds.api2": 6},
+                        "viator": {"com.bos.api2": 1, "com.lloyds.api2": 6},
+                        "wasabi": {},
+                        "total": 26,
+                    },
+                    "pending": {
+                        "iceland": {"com.lloyds.api2": 8},
+                        "squaremeal": {},
+                        "viator": {},
+                        "wasabi": {},
+                        "total": 8,
+                    },
+                    "failed": {
+                        "iceland": {"com.bos.api2": 1},
+                        "squaremeal": {},
+                        "viator": {},
+                        "wasabi": {},
+                        "total": 1,
+                    },
+                },
+                "payment_accounts": {
+                    "success": {"com.bos.api2": 6, "com.halifax.api2": 7, "com.lloyds.api2": 389, "total": 402},
+                    "pending": {"total": 0},
+                    "failed": {"total": 0},
+                },
+            }
         redis = StrictRedis.from_url(settings.redis_dsn)
         if redis.exists(self.redis_key):
             return json.loads(redis.get(self.redis_key))
