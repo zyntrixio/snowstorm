@@ -283,7 +283,7 @@
                     <tbody>
                         <tr>
                             <td>Availability</td>
-                            <td>{{ data["checkly"] }}%</td>
+                            <td>{{ data["checkly"] | round(2) }}%</td>
                         </tr>
                         <tr>
                             <td>Total Calls</td>

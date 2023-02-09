@@ -181,7 +181,7 @@ class MI_LloydsStats:
             headers={"X-Checkly-Account": self.checkly_account, "Authorization": f"Bearer {self.checkly_api_key}"},
         )
         results = [r["aggregate"]["successRatio"] for r in r.json()]
-        return int(sum(results) / len(results))
+        return sum(results) / len(results)
 
     def run_la_query(self, query: str) -> LogsQueryResult:
         credential = DefaultAzureCredential()
@@ -252,7 +252,7 @@ class MI_LloydsStats:
         if settings.demo_mode:
             return {
                 "users": {"com.bos.api2": 6, "com.halifax.api2": 9, "com.lloyds.api2": 284, "total": 299},
-                "checkly": 99,
+                "checkly": 99.975,
                 "api_stats": {
                     "percentiles": {"p50": 0.037, "p95": 0.132, "p99": 0.379},
                     "calls": 2194,
