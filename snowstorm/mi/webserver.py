@@ -1,6 +1,6 @@
 import psycopg2
 from fastapi import APIRouter, FastAPI, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from redis import StrictRedis
 
