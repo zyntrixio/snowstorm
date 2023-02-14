@@ -1,5 +1,6 @@
 import psycopg2
 from fastapi import APIRouter, FastAPI, HTTPException, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from redis import StrictRedis
@@ -83,6 +84,13 @@ class MI_Web_Lloyds:
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 essentials = MI_Web_Core()
 lloyds = MI_Web_Lloyds()
 app.include_router(essentials.router)
