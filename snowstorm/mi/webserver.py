@@ -1,6 +1,6 @@
 import psycopg2
 from fastapi import APIRouter, FastAPI, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response, JSONResponse
 from fastapi.templating import Jinja2Templates
 from redis import StrictRedis
 
@@ -44,6 +44,7 @@ class MI_Web_Lloyds:
     def __init__(self) -> None:
         self.router = APIRouter()
         self.router.add_api_route("/lbg", self.lbg, response_class=HTMLResponse)
+        self.router.add_api_route("/lbg/api", self.api, response_class=JSONResponse)
         self.templates = Jinja2Templates(directory=snowstorm.mi.templates.__path__[0])
 
     def lbg(self, request: Request, auth: str = None) -> Response:
@@ -63,6 +64,17 @@ class MI_Web_Lloyds:
                     "data": data,
                 },
             )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Auth Token Missing or Invalid",
+            )
+
+    def api(self, auth: str = None) -> JSONResponse:
+        if auth == settings.webserver_auth_token:
+            stats = MI_LloydsStats()
+            data = stats.run()
+            return JSONResponse(data)
         else:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
