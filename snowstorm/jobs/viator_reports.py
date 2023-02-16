@@ -70,51 +70,7 @@ class Job_ViatorReports:
                     "to": ",".join(self.mail_to),
                     "bcc": ",".join(self.mail_bcc),
                     "subject": "Viator Discounts weekly transactions",
-                    "html": f"""
-                    <html>
-                        <head>
-                            <style>
-                                html, body {{
-                                    margin: 0;
-                                    padding: 0;
-                                    height: 100%;
-                                    width: 100%;
-                                    color: white;
-                                    background: linear-gradient(to right, #141F33, #12425F);
-                                    font-size: 20px;
-                                }}
-                                a {{
-                                    color: white;
-                                    font-weight: bold;
-                                    text-decoration: none;
-                                    font-size: 24px;
-                                }}
-                                button {{
-                                    border: None;
-                                    background-color: #264054;
-                                    color: white;
-                                    font-weight: bold;
-                                    text-decoration: none;
-                                    border-radius: 8px;
-                                    padding: 16px 16px;
-                                    font-size: 24px;
-                                }}
-                            </style>
-                        </head>
-                        <body>
-                        <center>
-                        <br /><br /><br /><br /><br /><br />
-                        Hi Viator team,<br /><br />
-                        Please see the latest Viator transactional data file<br /><br />
-                        <a href="{url}"><button>Download</button></a></br /><br />
-                        Any questions please let us know.<br /><br />
-                        Kind Regards,<br />
-                        <img src="https://bink.com/wp-content/uploads/2023/02/logosite.png">
-                        </center>
-                        <br /><br /><br /><br /><br /><br />
-                        </body>
-                    </html>
-                    """,
+                    "text": f"Hi Viator team, Please see the latest Viator transactional data file: {url}",
                 },
             )
             r.raise_for_status()
