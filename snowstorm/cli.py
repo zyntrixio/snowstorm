@@ -1,5 +1,3 @@
-import logging
-
 import click
 import uvicorn
 
@@ -8,9 +6,8 @@ from snowstorm.jobs.apistats import Job_APIStats
 from snowstorm.jobs.database_cleanup import Job_DatabaseCleanup
 from snowstorm.jobs.events import Job_EventCreate
 from snowstorm.jobs.freshservice import Job_FreshService
+from snowstorm.jobs.viator_reports import Job_ViatorReports
 from snowstorm.mi.lloyds_notification import Notification_Lloyds
-
-log = logging.getLogger(__name__)
 
 
 @click.group()
@@ -88,6 +85,15 @@ def cleanup(days: int):
     """
     clean = Job_DatabaseCleanup(days=days)
     clean.cleanup()
+
+
+@job.command(name="viator")
+def viator_reports():
+    """
+    Sends Viator Reports
+    """
+    report = Job_ViatorReports()
+    report.run()
 
 
 @deploy.command(name="events")

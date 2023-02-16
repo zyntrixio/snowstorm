@@ -1,16 +1,13 @@
-import logging
-
 import pendulum
 from azure.core.exceptions import ServiceResponseError
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient, LogsQueryStatus
+from loguru import logger
 from sqlalchemy.orm import Session
 
 from snowstorm import leader_election
 from snowstorm.database import APIStats, engine
 from snowstorm.settings import settings
-
-log = logging.getLogger(__name__)
 
 
 class Job_APIStats:
@@ -68,7 +65,7 @@ class Job_APIStats:
             with Session(engine) as session:
                 for iteration, element in enumerate(logs, 1):
                     if iteration % 100 == 0 or iteration == log_count:
-                        logging.warning(f"Inserting Record {iteration} of {log_count}")
+                        logger.warning(f"Inserting Record {iteration} of {log_count}")
                     insert = APIStats(
                         id=element[0],
                         date_time=element[1],

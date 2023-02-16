@@ -1,12 +1,9 @@
-import logging
-
 import pendulum
+from loguru import logger
 from sqlalchemy.orm import Session
 
 from snowstorm import leader_election
 from snowstorm.database import APIStats, Events, FreshService, engine
-
-log = logging.getLogger(__name__)
 
 
 class Job_DatabaseCleanup:
@@ -19,15 +16,15 @@ class Job_DatabaseCleanup:
         delta = pendulum.today().subtract(days=self.days)
         with Session(engine) as session:
             apistats = session.query(APIStats).filter(APIStats.date_time <= delta)
-            logging.warning("apistats records found", extra={"record_count": apistats.count()})
+            logger.warning("apistats records found", extra={"record_count": apistats.count()})
             apistats.delete()
 
             freshservice = session.query(FreshService).filter(FreshService.updated_at <= delta)
-            logging.warning("freshservice records found", extra={"record_count": freshservice.count()})
+            logger.warning("freshservice records found", extra={"record_count": freshservice.count()})
             freshservice.delete
 
             events = session.query(Events).filter(Events.event_date_time <= delta)
-            logging.warning("events records found", extra={"record_count": events.count()})
+            logger.warning("events records found", extra={"record_count": events.count()})
             events.delete()
 
             session.commit()

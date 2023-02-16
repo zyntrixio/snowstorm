@@ -1,16 +1,14 @@
 import json
-import logging
 from time import sleep
 
 import pika
+from loguru import logger
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
 from sqlalchemy.orm import Session
 
 from snowstorm.database import Events, engine
 from snowstorm.settings import settings
-
-log = logging.getLogger(__name__)
 
 
 class Deploy_EventProcessor:
@@ -47,7 +45,7 @@ class Deploy_EventProcessor:
     def process_event(
         self, ch: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, message: bytes
     ) -> None:
-        logging.warning("Processing event", extra={"queue_name": method.routing_key})
+        logger.warning("Processing event", extra={"queue_name": method.routing_key})
         try:
             raw_msg = json.loads(message.decode())
             event_date_time = raw_msg.pop("event_date_time")
@@ -60,7 +58,7 @@ class Deploy_EventProcessor:
         except KeyError:
             self.dead_letter(message.decode())
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            logging.warning("Message does not contain the required JSON fields", extra=raw_msg)
+            logger.warning("Message does not contain the required JSON fields", extra=raw_msg)
             return
 
         retries = 3
@@ -75,10 +73,10 @@ class Deploy_EventProcessor:
             except Exception as ex:
                 retries -= 1
                 if retries < 1:
-                    logging.warning(msg="Event processing failed, sending to Dead Letter Queue", exc_info=ex)
+                    logger.warning(msg="Event processing failed, sending to Dead Letter Queue", exc_info=ex)
                     self.dead_letter(message.decode())
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                     break
                 else:
-                    logging.warning(msg="Event processing failed, retrying", exc_info=ex)
+                    logger.warning(msg="Event processing failed, retrying", exc_info=ex)
                     continue

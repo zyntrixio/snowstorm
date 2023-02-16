@@ -1,17 +1,10 @@
-import logging
 import socket
 from datetime import timedelta
 
 import redis
-from pythonjsonlogger import jsonlogger
+from loguru import logger
 
 from snowstorm.settings import settings
-
-log = logging.getLogger()
-logHandler = logging.StreamHandler()
-logFmt = jsonlogger.JsonFormatter(timestamp=True)
-logHandler.setFormatter(logFmt)
-log.addHandler(logHandler)
 
 
 def leader_election(job_name: str) -> bool:
@@ -35,5 +28,5 @@ def leader_election(job_name: str) -> bool:
     else:
         is_leader = True
     if not is_leader:
-        logging.warning("Leader Election Failed, exiting.")
+        logger.warning("Leader Election Failed, exiting.")
     return is_leader

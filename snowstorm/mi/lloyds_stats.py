@@ -1,6 +1,5 @@
 import itertools
 import json
-import logging
 
 import pendulum
 import psycopg2
@@ -8,11 +7,10 @@ import requests
 from azure.core.exceptions import ServiceResponseError
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient, LogsQueryResult, LogsQueryStatus
+from loguru import logger
 from redis import StrictRedis
 
 from snowstorm.settings import settings
-
-log = logging.getLogger(__name__)
 
 
 class MI_LloydsStats:
@@ -192,10 +190,10 @@ class MI_LloydsStats:
                     workspace_id=self.workspace_id, query=query, timespan=(pendulum.duration(days=1))
                 )
             except ServiceResponseError:
-                log.warning("Failed, probably retrying")
+                logger.warning("Failed, probably retrying")
                 continue
             if req.status == LogsQueryStatus.PARTIAL:
-                log.warning("Failed, probably retrying")
+                logger.warning("Failed, probably retrying")
                 continue
             elif req.status == LogsQueryStatus.SUCCESS:
                 return req.tables[0].rows

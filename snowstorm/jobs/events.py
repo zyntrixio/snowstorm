@@ -1,15 +1,13 @@
 import json
-import logging
 from random import choice, randint
 
 import pendulum
 import pika
 from faker import Faker
 from faker.providers import internet
+from loguru import logger
 
 from snowstorm.settings import settings
-
-log = logging.getLogger(__name__)
 
 
 class Job_EventCreate:
@@ -63,7 +61,7 @@ class Job_EventCreate:
                     "internal_user_ref": randint(1, 999),
                     "email": self.fake.free_email(),
                 }
-                logging.warning("Creating Event", extra=msg_payload)
+                logger.warning("Creating Event", extra=msg_payload)
                 channel.basic_publish(
                     exchange="",
                     routing_key=self.queue_name,

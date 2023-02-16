@@ -1,15 +1,13 @@
-import logging
 from time import sleep
 
 import pendulum
 import requests
+from loguru import logger
 from sqlalchemy.orm import Session
 
 from snowstorm import leader_election
 from snowstorm.database import FreshService, engine
 from snowstorm.settings import settings
-
-log = logging.getLogger(__name__)
 
 
 class Job_FreshService:
@@ -25,7 +23,7 @@ class Job_FreshService:
         page = 1
         tickets = []
         while True:
-            log.warning(f"Processing page {page}")
+            logger.warning(f"Processing page {page}")
             lookup = requests.get(
                 "https://bink.freshservice.com/api/v2/tickets",
                 params={
@@ -36,7 +34,7 @@ class Job_FreshService:
                 auth=(self.api_key, "X"),
             )
             if lookup.status_code == 429:
-                log.warning(f"Rate limit hit, sleeping {self.rate_limit_timeout} seconds")
+                logger.warning(f"Rate limit hit, sleeping {self.rate_limit_timeout} seconds")
                 sleep(self.rate_limit_sleep)
                 continue
             if len(lookup.json()["tickets"]) != 0:
@@ -44,7 +42,7 @@ class Job_FreshService:
                 for ticket in lookup.json()["tickets"]:
                     tickets.append(ticket)
             else:
-                log.warning("No pages remaining", extra={"ticket_count": len(tickets)})
+                logger.warning("No pages remaining", extra={"ticket_count": len(tickets)})
                 break
 
         with Session(engine) as session:
