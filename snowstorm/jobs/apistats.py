@@ -41,15 +41,15 @@ class Job_APIStats:
         """
         for retry in range(self.retries):
             try:
-                log.warning(f"Running query, attempt {retry} of {self.retries}")
+                logger.warning(f"Running query, attempt {retry} of {self.retries}")
                 response = client.query_workspace(
                     workspace_id=self.workspace_id, query=query, timespan=(start_date, end_date)
                 )
             except ServiceResponseError:
-                log.warning("Service Response Error")
+                logger.warning("Service Response Error")
                 continue
             if response.status == LogsQueryStatus.PARTIAL:
-                log.warning("Partial Results, Retrying")
+                logger.warning("Partial Results, Retrying")
                 continue
             elif response.status == LogsQueryStatus.SUCCESS:
                 return response.tables[0].rows
