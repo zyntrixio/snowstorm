@@ -1,10 +1,10 @@
 import psycopg2
 from fastapi import APIRouter, FastAPI, HTTPException, status
-from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
+from fastapi.staticfiles import StaticFiles
 from redis import StrictRedis
+from starlette.responses import FileResponse
 
 from snowstorm.mi.lloyds_stats import MI_LloydsStats
 from snowstorm.settings import settings
