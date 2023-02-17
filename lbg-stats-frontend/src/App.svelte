@@ -135,7 +135,7 @@
 
   async function fetchLBGStats() {
     const response = await fetch(
-      "https:stats.gb.bink.com/lbg/api?auth=4e97f9c1-c259-4858-99d4-191800b75946"
+      "https:/stats.gb.bink.com/lbg/api?auth=4e97f9c1-c259-4858-99d4-191800b75946"
     );
     const data = await response.json();
     lbgStats = data;
