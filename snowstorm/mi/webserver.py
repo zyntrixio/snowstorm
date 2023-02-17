@@ -1,11 +1,11 @@
 import psycopg2
-from fastapi import APIRouter, FastAPI, HTTPException, Request, status
+from fastapi import APIRouter, FastAPI, HTTPException, status
+from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
-from fastapi.templating import Jinja2Templates
 from redis import StrictRedis
 
-import snowstorm.mi.templates
 from snowstorm.mi.lloyds_stats import MI_LloydsStats
 from snowstorm.settings import settings
 
@@ -24,12 +24,12 @@ class MI_Web_Core:
     def root(self) -> RedirectResponse:
         return RedirectResponse(url=self.redirect)
 
-    def livez(self, request: Request) -> Response:
+    def livez(self) -> Response:
         return Response(
             status_code=status.HTTP_204_NO_CONTENT,
         )
 
-    def readyz(self, request: Request) -> Response:
+    def readyz(self) -> Response:
         try:
             StrictRedis.from_url(self.redis_dsn).ping()
             with psycopg2.connect(self.database_dsn).cursor() as cur:
@@ -46,25 +46,10 @@ class MI_Web_Lloyds:
         self.router = APIRouter()
         self.router.add_api_route("/lbg", self.lbg, response_class=HTMLResponse)
         self.router.add_api_route("/lbg/api", self.api, response_class=JSONResponse)
-        self.templates = Jinja2Templates(directory=snowstorm.mi.templates.__path__[0])
 
-    def lbg(self, request: Request, auth: str = None) -> Response:
+    def lbg(self, auth: str = None) -> FileResponse:
         if auth == settings.webserver_auth_token:
-            stats = MI_LloydsStats()
-            data = stats.run()
-
-            return self.templates.TemplateResponse(
-                "index.html",
-                {
-                    "request": request,
-                    "bundle_ids": {
-                        "com.bos.api2": "Bank of Scotland",
-                        "com.halifax.api2": "Halifax",
-                        "com.lloyds.api2": "Lloyds",
-                    },
-                    "data": data,
-                },
-            )
+            return FileResponse("/app/frontend/index.html")
         else:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -84,6 +69,8 @@ class MI_Web_Lloyds:
 
 
 app = FastAPI()
+app.mount("/assets", StaticFiles(directory="/app/frontend/assets"), name="assets")
+app.mount("/images", StaticFiles(directory="/app/frontend/images"), name="images")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
