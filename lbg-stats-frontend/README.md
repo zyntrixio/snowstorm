@@ -5,8 +5,11 @@ This is an app to create the files to show the LBG stats page. Lets go over the 
 Prerequisites: Newish version of Node as well as npm (or other package manager, assuming npm below but pnpm is cooler). There might be others that I happen to have installed so I was not aware of!
 
 Installing locally: Clone the repo and run `npm install` 
+
 Running a dev server: `npm run dev`, will provide localhost url in terminal
+
 Building new version: `npm run build`, this is created in the 'dist' folder
+
 
 The rest of this readme is the boilerplate info for the framework used...
 
