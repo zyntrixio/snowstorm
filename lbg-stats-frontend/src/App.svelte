@@ -169,7 +169,7 @@
 
 <main>
   <div class="header">
-    <img src="bink-logo.png" alt="bink logo" />
+    <img src="images/bink-logo.png" alt="Bink" />
     <select id="channel-select" bind:value={selectedFilter}>
       <option value="all">LBG Stats</option>
       <option value="com.lloyds.api2">Lloyds</option>
