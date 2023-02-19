@@ -454,40 +454,6 @@ doc = ["mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-markdo
 test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.10.0)", "coverage[toml] (>=6.5.0,<8.0)", "databases[sqlite] (>=0.3.2,<0.7.0)", "email-validator (>=1.1.1,<2.0.0)", "flask (>=1.1.2,<3.0.0)", "httpx (>=0.23.0,<0.24.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.982)", "orjson (>=3.2.1,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "peewee (>=3.13.3,<4.0.0)", "pytest (>=7.1.3,<8.0.0)", "python-jose[cryptography] (>=3.3.0,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "pyyaml (>=5.3.1,<7.0.0)", "ruff (==0.0.138)", "sqlalchemy (>=1.3.18,<1.4.43)", "types-orjson (==3.6.2)", "types-ujson (==5.6.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)"]
 
 [[package]]
-name = "flake8"
-version = "6.0.0"
-description = "the modular source code checker: pep8 pyflakes and co"
-category = "dev"
-optional = false
-python-versions = ">=3.8.1"
-files = [
-    {file = "flake8-6.0.0-py2.py3-none-any.whl", hash = "sha256:3833794e27ff64ea4e9cf5d410082a8b97ff1a06c16aa3d2027339cd0f1195c7"},
-    {file = "flake8-6.0.0.tar.gz", hash = "sha256:c61007e76655af75e6785a931f452915b371dc48f56efd765247c8fe68f2b181"},
-]
-
-[package.dependencies]
-mccabe = ">=0.7.0,<0.8.0"
-pycodestyle = ">=2.10.0,<2.11.0"
-pyflakes = ">=3.0.0,<3.1.0"
-
-[[package]]
-name = "flake8-pyproject"
-version = "1.2.2"
-description = "Flake8 plug-in loading the configuration from pyproject.toml"
-category = "dev"
-optional = false
-python-versions = ">= 3.6"
-files = [
-    {file = "flake8_pyproject-1.2.2-py3-none-any.whl", hash = "sha256:52d412219e7db6227faa654675b1435947b11d49b453f3eced760f19bdd6f06a"},
-]
-
-[package.dependencies]
-Flake8 = ">=5"
-
-[package.extras]
-dev = ["pyTest", "pyTest-cov"]
-
-[[package]]
 name = "greenlet"
 version = "2.0.1"
 description = "Lightweight in-process concurrent programming"
@@ -730,18 +696,6 @@ files = [
     {file = "MarkupSafe-2.1.2-cp39-cp39-win32.whl", hash = "sha256:137678c63c977754abe9086a3ec011e8fd985ab90631145dfb9294ad09c102a7"},
     {file = "MarkupSafe-2.1.2-cp39-cp39-win_amd64.whl", hash = "sha256:0576fe974b40a400449768941d5d0858cc624e3249dfd1e0c33674e5c7ca7aed"},
     {file = "MarkupSafe-2.1.2.tar.gz", hash = "sha256:abcabc8c2b26036d62d4c746381a6f7cf60aafcc653198ad678306986b09450d"},
-]
-
-[[package]]
-name = "mccabe"
-version = "0.7.0"
-description = "McCabe checker, plugin for flake8"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
-    {file = "mccabe-0.7.0.tar.gz", hash = "sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325"},
 ]
 
 [[package]]
@@ -1016,18 +970,6 @@ files = [
 ]
 
 [[package]]
-name = "pycodestyle"
-version = "2.10.0"
-description = "Python style guide checker"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pycodestyle-2.10.0-py2.py3-none-any.whl", hash = "sha256:8a4eaf0d0495c7395bdab3589ac2db602797d76207242c17d470186815706610"},
-    {file = "pycodestyle-2.10.0.tar.gz", hash = "sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053"},
-]
-
-[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -1091,18 +1033,6 @@ typing-extensions = ">=4.2.0"
 [package.extras]
 dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
-
-[[package]]
-name = "pyflakes"
-version = "3.0.1"
-description = "passive checker of Python programs"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
-    {file = "pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
-]
 
 [[package]]
 name = "pyjwt"
@@ -1235,6 +1165,33 @@ requests = ">=2.0.0"
 
 [package.extras]
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
+
+[[package]]
+name = "ruff"
+version = "0.0.248"
+description = "An extremely fast Python linter, written in Rust."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ruff-0.0.248-py3-none-macosx_10_7_x86_64.whl", hash = "sha256:54fc068694c396650f45a89bf3d1a614e81d9da06eeb09ec024c188d3c99f706"},
+    {file = "ruff-0.0.248-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:00f6afb39a8fa85a1b8273c23e275d523b79912a30e34d5e78798bf080ff7f0e"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cf87532bb99f9cb7c4bd7e3ff9137da81eb65e51ffe28178b7f8af1e62703c36"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:f86db933d0ed614ffd037e0e8e886231e535e248ec9c8627d65113c1ba350f23"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:51194533f6912105bdffc281fbf3cf233116ecf551d03fdfb65f3aa58deca450"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "sha256:77dba6014f807a98125cd4bfc54999d7846e9c80451c6752ba1123192772dcd9"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:ff49ceab0fbaf8c3e9bc90b46bc0f790ba67b8f9e6e9c09d2a3cc39db602b434"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:67b7628c384c83efa8fbe28e365ae5999615c7ea323304b6bf93c61e3ff477db"},
+    {file = "ruff-0.0.248-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4041c592d2b60fa5237f890302062414187fe15e640217e711cba6e14fbaf622"},
+    {file = "ruff-0.0.248-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:d2a34af7647202a915f54a5492ea08cdac1921acc476b31552e443893662e543"},
+    {file = "ruff-0.0.248-py3-none-musllinux_1_2_armv7l.whl", hash = "sha256:1098eaee10df69eb3d8c265dfbc29ab2d1e11d72130e9295394febf149e5aff6"},
+    {file = "ruff-0.0.248-py3-none-musllinux_1_2_i686.whl", hash = "sha256:0f8bd53fbd2499c39eab3fbac0a8f0e4cf57d0b2e0a0cf69f11193a14060fcad"},
+    {file = "ruff-0.0.248-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:9f7b3c25d8ceca7e81f65833894264f1380313c02d89a5ab94d757fa80bd7355"},
+    {file = "ruff-0.0.248-py3-none-win32.whl", hash = "sha256:904f2e49bd800416088339ee68580b226a3b16bf7e859c723555f785ebadc152"},
+    {file = "ruff-0.0.248-py3-none-win_amd64.whl", hash = "sha256:ea08248f598e886a94a67784b907312589acfa28983b8cf42eeefe23e7857db9"},
+    {file = "ruff-0.0.248-py3-none-win_arm64.whl", hash = "sha256:e6f0f47370e65bfd66cbbcb691a46cb02ca23ce00b67c591e8f534c6f3625ba2"},
+    {file = "ruff-0.0.248.tar.gz", hash = "sha256:687ec2bf9cabe7c0b5fc69191953b9261ceb2b58675b45676a8b21444569166c"},
+]
 
 [[package]]
 name = "six"
@@ -1422,4 +1379,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "defa66ba29a315227a730eefe9956413855d02cebaef8c18a43daa772b230fdb"
+content-hash = "c7dbe41343632f6903843b62ae60e92485426f152497071007f1984ae4a0708e"
