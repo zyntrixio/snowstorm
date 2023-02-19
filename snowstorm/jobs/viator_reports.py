@@ -5,6 +5,7 @@ import requests
 from azure.storage.blob import BlobClient, BlobSasPermissions, ContainerClient, generate_blob_sas
 from loguru import logger
 
+from snowstorm import leader_election
 from snowstorm.settings import settings
 
 
@@ -104,7 +105,9 @@ class Job_ViatorReports:
         except Exception as e:
             logger.exception(e)
 
-    def run(self):
+    def run(self) -> None:
+        if not leader_election(job_name="viator_reports"):
+            return None
         blobs = self.list_blobs()
         logger.info(f"Blobs to process: {blobs}")
         for blob in blobs:
