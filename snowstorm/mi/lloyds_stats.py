@@ -56,7 +56,7 @@ class MI_LloydsStats:
         AS pending_sqauremeal_lcards FROM ubiquity_schemeaccountentry
         INNER JOIN "user" ON ubiquity_schemeaccountentry.user_id = "user".id
         INNER JOIN scheme_schemeaccount ON ubiquity_schemeaccountentry.scheme_account_id = scheme_schemeaccount.id
-        WHERE scheme_schemeaccount.status = 1
+        WHERE ubiquity_schemeaccountentry.link_status = 1
         AND scheme_schemeaccount.is_deleted = False
         AND scheme_schemeaccount.scheme_id = %s
         AND "user".bundle_id IN ('com.bos.api2', 'com.halifax.api2', 'com.lloyds.api2')
@@ -69,7 +69,7 @@ class MI_LloydsStats:
         AS pending_sqauremeal_lcards FROM ubiquity_schemeaccountentry
         INNER JOIN "user" ON ubiquity_schemeaccountentry.user_id = "user".id
         INNER JOIN scheme_schemeaccount ON ubiquity_schemeaccountentry.scheme_account_id = scheme_schemeaccount.id
-        WHERE scheme_schemeaccount.status IN (0, 442, 443, 1001, 2001)
+        WHERE ubiquity_schemeaccountentry.link_status IN (0, 442, 443, 1001, 2001)
         AND scheme_schemeaccount.is_deleted = False
         AND scheme_schemeaccount.scheme_id = %s
         AND "user".bundle_id IN ('com.bos.api2', 'com.halifax.api2', 'com.lloyds.api2')
@@ -82,7 +82,7 @@ class MI_LloydsStats:
         AS pending_sqauremeal_lcards FROM ubiquity_schemeaccountentry
         INNER JOIN "user" ON ubiquity_schemeaccountentry.user_id = "user".id
         INNER JOIN scheme_schemeaccount ON ubiquity_schemeaccountentry.scheme_account_id = scheme_schemeaccount.id
-        WHERE scheme_schemeaccount.status NOT IN (1, 0, 442, 443, 1001, 2001)
+        WHERE ubiquity_schemeaccountentry.link_status NOT IN (1, 0, 442, 443, 1001, 2001)
         AND scheme_schemeaccount.is_deleted = False
         AND scheme_schemeaccount.scheme_id = %s
         AND "user".bundle_id IN ('com.bos.api2', 'com.halifax.api2', 'com.lloyds.api2')
