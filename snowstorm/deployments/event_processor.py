@@ -36,11 +36,11 @@ class Deploy_EventProcessor:
                 sleep(60)
                 continue
 
-    def dead_letter(msg: dict) -> None:
+    def dead_letter(self, msg: bytes) -> None:
         with pika.BlockingConnection(pika.URLParameters(settings.rabbitmq_dsn)) as connection:
             channel = connection.channel()
             channel.queue_declare(queue="snowstorm_deadletter", durable=True)
-            channel.basic_publish(exchange="", routing_key="snowstorm_deadletter", body=json.dumps(msg))
+            channel.basic_publish(exchange="", routing_key="snowstorm_deadletter", body=json.dumps(msg.decode()))
 
     def process_event(
         self, ch: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, message: bytes
@@ -56,7 +56,7 @@ class Deploy_EventProcessor:
                 "json": raw_msg,
             }
         except KeyError:
-            self.dead_letter(message.decode())
+            self.dead_letter(message)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             logger.warning("Message does not contain the required JSON fields", extra=raw_msg)
             return
