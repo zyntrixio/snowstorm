@@ -1,6 +1,5 @@
 import requests
 
-from snowstorm import leader_election
 from snowstorm.mi.lloyds_stats import MI_LloydsStats
 from snowstorm.settings import settings
 
@@ -12,8 +11,6 @@ class Notification_Lloyds:
         self.webhook_url = "https://hellobink.webhook.office.com/webhookb2/66f08760-f657-42af-bf88-4f7e4c009af1@a6e2367a-92ea-4e5a-b565-723830bcc095/IncomingWebhook/93166ec813db41939a825e5537ae8e82/48aca6b1-4d56-4a15-bc92-8aa9d97300df"  # noqa
 
     def send(self) -> None:
-        if not leader_election(job_name="mi_lloyds_notification"):
-            return None
         stats = MI_LloydsStats()
         data = stats.run()
         msg = {

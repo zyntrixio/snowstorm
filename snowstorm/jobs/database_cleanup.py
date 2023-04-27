@@ -2,7 +2,6 @@ import pendulum
 from loguru import logger
 from sqlalchemy.orm import Session
 
-from snowstorm import leader_election
 from snowstorm.database import APIStats, Events, FreshService, engine
 
 
@@ -11,8 +10,6 @@ class Job_DatabaseCleanup:
         self.days = days
 
     def cleanup(self) -> None:
-        if not leader_election(job_name="database_cleanup"):
-            return None
         delta = pendulum.today().subtract(days=self.days)
         with Session(engine) as session:
             apistats = session.query(APIStats).filter(APIStats.date_time <= delta)

@@ -28,6 +28,7 @@ class Job_EventCreate:
                     hours=randint(0, 24),
                     minutes=randint(0, 60),
                     seconds=randint(0, 60),
+                    microseconds=randint(0, 999999),
                 )
                 event_types = [
                     "user.session.start",

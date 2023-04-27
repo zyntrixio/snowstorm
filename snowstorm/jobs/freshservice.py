@@ -5,7 +5,6 @@ import requests
 from loguru import logger
 from sqlalchemy.orm import Session
 
-from snowstorm import leader_election
 from snowstorm.database import FreshService, engine
 from snowstorm.settings import settings
 
@@ -18,8 +17,6 @@ class Job_FreshService:
         self.rate_limit_timeout = rate_limit_timeout
 
     def fetch_stats(self) -> None:
-        if not leader_election(job_name="freshservice"):
-            return None
         page = 1
         tickets = []
         while True:

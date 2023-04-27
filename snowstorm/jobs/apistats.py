@@ -5,7 +5,6 @@ from azure.monitor.query import LogsQueryClient, LogsQueryStatus
 from loguru import logger
 from sqlalchemy.orm import Session
 
-from snowstorm import leader_election
 from snowstorm.database import APIStats, engine
 from snowstorm.settings import settings
 
@@ -55,8 +54,6 @@ class Job_APIStats:
                 return response.tables[0].rows
 
     def store_logs(self) -> None:
-        if not leader_election(job_name="apistats"):
-            return None
         for day in range(self.days):
             start_date = pendulum.today().subtract(days=day, hours=1)
             end_date = start_date.add(days=1, hours=1)
