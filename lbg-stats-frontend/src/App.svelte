@@ -163,7 +163,11 @@
   });
 
   export function titleCase(string: string) {
-    return string[0].toUpperCase() + string.substr(1).toLowerCase();
+    const str = string.split("_");
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+    }
+    return str.join(" ");
   }
 </script>
 
