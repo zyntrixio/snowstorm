@@ -48,7 +48,7 @@ class MI_LloydsStats:
             "squaremeal": 216,
             "viator": 285,
             "wasabi": 215,
-            "theworks": 351,
+            "the_works": 351,
             "itsu": 352,
         }
 
