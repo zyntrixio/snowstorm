@@ -1,9 +1,9 @@
 from random import choice, randint
 
 import pendulum
-from kombu import Connection
 from faker import Faker
 from faker.providers import internet
+from kombu import Connection
 from loguru import logger
 
 from snowstorm.settings import settings
