@@ -1,3 +1,6 @@
+from time import sleep
+
+from amqp.exceptions import NotFound
 from kombu import Connection
 from loguru import logger
 from sqlalchemy.orm import Session
@@ -23,6 +26,8 @@ class Deploy_EventProcessor:
                     message = queue.get(block=True, timeout=self.timeout)
                     self.process_message(message=message.payload)
                     message.ack()
+                except NotFound:
+                    sleep(120)
                 except queue.Empty:
                     if not self.forever:
                         break
