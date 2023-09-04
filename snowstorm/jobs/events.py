@@ -20,7 +20,7 @@ class Job_EventCreate:
     def create_event(self) -> None:
         for _ in range(self.message_count):
             event_date_time = pendulum.today().subtract(
-                days=randint(0, 1000),
+                days=randint(35, 1000),
                 hours=randint(0, 24),
                 minutes=randint(0, 60),
                 seconds=randint(0, 60),
