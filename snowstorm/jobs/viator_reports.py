@@ -10,7 +10,7 @@ from snowstorm.settings import settings
 
 class Job_ViatorReports:
     def __init__(self) -> None:
-        self.mail_to = ["mchattertonwhite@tripadvisor.com", "ejordan@tripadvisor.com", "jleaper@tripadvisor.com"]
+        self.mail_to = ["mchattertonwhite@tripadvisor.com", "ejordan@tripadvisor.com", "mpachera@tripadvisor.com"]
         self.mail_bcc = ["kkrastev@bink.com", "sgraham@bink.com"]
         self.teams_webhook = "https://hellobink.webhook.office.com/webhookb2/bf220ac8-d509-474f-a568-148982784d19@a6e2367a-92ea-4e5a-b565-723830bcc095/IncomingWebhook/4fa9be428a2347f2a6f02d2758359d85/48aca6b1-4d56-4a15-bc92-8aa9d97300df"  # noqa
         self.storage_account_name = settings.storage_account_name
