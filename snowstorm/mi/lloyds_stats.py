@@ -49,8 +49,8 @@ class MI_LloydsStats:
             "viator": 285,
             "the_works": 351,
             "itsu": 352,
-            "slims": 386,
-            "mixr": 393,
+            "slim_chickens": 386,
+            "stonegate": 393,
         }
 
         success_results = {}
