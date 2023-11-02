@@ -2,7 +2,7 @@
 name = "snowstorm"
 version = "0.0.0"
 description = "Implements mechanisms for shipping data from any service to the Bink Data Management Team"
-authors = ["Your Name <you@example.com>"]
+authors = ["Chris Pressland <cpressland@bink.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
