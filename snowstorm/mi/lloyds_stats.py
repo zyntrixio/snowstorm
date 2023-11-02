@@ -44,6 +44,7 @@ class MI_LloydsStats:
         hermes_db = psycopg2.connect(self.hermes_dsn)
 
         plan_ids = {
+            "iceland": 105,
             "squaremeal": 216,
             "viator": 285,
             "the_works": 351,
