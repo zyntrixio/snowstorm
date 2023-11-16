@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     storage_account_container: str = "viator"
 
     mailgun_key: str = "b09950929bd21cbece22c22b2115736d-e5e67e3e-068f44cc"
+    debug_mode: bool = False
 
 
 settings = Settings()

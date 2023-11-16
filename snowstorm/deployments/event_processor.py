@@ -51,6 +51,9 @@ class Deploy_EventProcessor:
             session.add(insert)
             session.commit()
 
+        if settings.debug_mode:
+            logger.info("Event payload: {}", event)
+
     def dead_letter(self, message: str) -> None:
         with Connection(self.rabbitmq_dsn) as conn, conn.SimpleQueue("snowstorm_deadletter") as queue:
             queue.put(message)
