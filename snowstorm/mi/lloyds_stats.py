@@ -268,7 +268,7 @@ class MI_LloydsStats:
                     "failed": {"total": 0},
                 },
             }
-        redis = StrictRedis.from_url(settings.redis_dsn)
+        redis = StrictRedis.from_url(str(settings.redis_dsn))
         if redis.exists(self.redis_key):
             return json.loads(redis.get(self.redis_key))
 
