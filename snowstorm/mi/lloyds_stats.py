@@ -3,7 +3,6 @@ import json
 
 import pendulum
 import psycopg2
-import requests
 from azure.core.exceptions import ServiceResponseError
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient, LogsQueryResult, LogsQueryStatus
@@ -15,11 +14,9 @@ from snowstorm.settings import settings
 
 class MI_LloydsStats:
     def __init__(self):
-        self.database_dsn = settings.database_dsn
+        self.database_dsn = str(settings.database_dsn)
         self.hermes_dsn = self.database_dsn.replace("snowstorm", "hermes")
         self.harmonia_dsn = self.database_dsn.replace("snowstorm", "harmonia")
-        self.checkly_account = "da41e9cc-d34a-4cab-b7d6-44740d1c7d2b"
-        self.checkly_api_key = "cu_f9d5117af6cd4f29b6db92914a4abbf6"
         self.redis_key = "snowstorm_mi_lloyds_stats"
         self.workspace_id = settings.workspace_id
 
@@ -167,23 +164,6 @@ class MI_LloydsStats:
 
         return results
 
-    def checkly(self) -> float:
-        """
-        Returns API Availability for all endpoints
-        """
-        r = requests.get(
-            "https://api.checklyhq.com/v1/reporting",
-            params={
-                "from": pendulum.now().subtract(hours=24).timestamp(),
-                "to": pendulum.now().timestamp(),
-                "deactivated": False,
-                "filterByTags": "#api2",
-            },
-            headers={"X-Checkly-Account": self.checkly_account, "Authorization": f"Bearer {self.checkly_api_key}"},
-        )
-        results = [r["aggregate"]["successRatio"] for r in r.json()]
-        return sum(results) / len(results)
-
     def run_la_query(self, query: str) -> LogsQueryResult:
         credential = DefaultAzureCredential()
         client = LogsQueryClient(credential)
@@ -253,7 +233,6 @@ class MI_LloydsStats:
         if settings.demo_mode:
             return {
                 "users": {"com.bos.api2": 6, "com.halifax.api2": 9, "com.lloyds.api2": 284, "total": 299},
-                "checkly": 99.975,
                 "api_stats": {
                     "percentiles": {"p50": 0.037, "p95": 0.132, "p99": 0.379},
                     "calls": 2194,
@@ -296,11 +275,9 @@ class MI_LloydsStats:
         users = self.users()
         loyalty_accounts = self.loyalty_accounts()
         payment_accounts = self.payment_accounts()
-        checkly = self.checkly()
         api_stats = self.api_stats()
         results = {
             "users": users,
-            "checkly": checkly,
             "api_stats": api_stats,
             "loyalty_accounts": loyalty_accounts,
             "payment_accounts": payment_accounts,

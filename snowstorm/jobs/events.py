@@ -11,7 +11,7 @@ from snowstorm.settings import settings
 
 class Job_EventCreate:
     def __init__(self, queue_name: str, message_count: int) -> None:
-        self.rabbitmq_dsn = settings.rabbitmq_dsn
+        self.rabbitmq_dsn = str(settings.rabbitmq_dsn)
         self.queue_name = queue_name
         self.message_count = message_count
         self.fake = Faker()
@@ -59,5 +59,5 @@ class Job_EventCreate:
                 "email": self.fake.free_email(),
             }
             logger.warning("Creating Event", extra=msg_payload)
-            with Connection(self.rabbitmq_dsn) as conn, conn.SimpleQueue(self.queue_name) as queue:
+            with Connection(str(self.rabbitmq_dsn)) as conn, conn.SimpleQueue(self.queue_name) as queue:
                 queue.put(msg_payload)

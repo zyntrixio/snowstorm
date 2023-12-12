@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base
 
 from snowstorm.settings import settings
 
-engine = create_engine(settings.database_dsn, echo=False)
+engine = create_engine(str(settings.database_dsn), echo=False)
 base = declarative_base()
 
 

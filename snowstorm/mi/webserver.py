@@ -18,8 +18,8 @@ class MI_Web_Core:
         self.router.add_api_route("/readyz", self.readyz, response_class=PlainTextResponse)
 
         self.redirect = "/lbg"
-        self.redis_dsn = settings.redis_dsn
-        self.database_dsn = settings.database_dsn
+        self.redis_dsn = str(settings.redis_dsn)
+        self.database_dsn = str(settings.database_dsn)
 
     def root(self) -> RedirectResponse:
         return RedirectResponse(url=self.redirect)
