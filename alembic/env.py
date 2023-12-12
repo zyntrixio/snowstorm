@@ -27,7 +27,7 @@ target_metadata = None
 
 
 def run_migrations_offline() -> None:
-    url = settings.database_dsn
+    url = str(settings.database_dsn)
     context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
 
     with context.begin_transaction():
@@ -35,7 +35,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = create_engine(settings.database_dsn)
+    connectable = create_engine(str(settings.database_dsn))
 
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)

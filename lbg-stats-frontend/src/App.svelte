@@ -42,7 +42,6 @@
         [key: string]: number;
       };
     };
-    checkly: number;
     loyalty_accounts: {
       failed: Retailer;
       pending: Retailer;
@@ -69,7 +68,6 @@
       },
       status_codes: {},
     },
-    checkly: 0,
     loyalty_accounts: {
       failed: {},
       pending: {},
@@ -369,10 +367,6 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Availability</td>
-                <td>{Math.round(lbgStats?.checkly * 100) / 100}%</td>
-              </tr>
               <tr>
                 <td>Total Calls</td>
                 <td>{lbgStats.api_stats.calls}</td>

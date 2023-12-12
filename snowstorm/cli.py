@@ -97,14 +97,12 @@ def viator_reports():
 
 
 @deploy.command(name="events")
-@click.option("-q", "--queue", default="snowstorm_test", help="Queues to use, comma seperated", show_default=True)
-@click.option("-f", "--forever", is_flag=True, help="Run forever")
-def event_processor(queue: str, forever: bool):
+@click.option("-q", "--queues", default="snowstorm_test", help="Queues to process, comma seperated", show_default=True)
+def event_processor(queues: str):
     """
     Collects Olympus Events from RabbitMQ
     """
-    ep = Deploy_EventProcessor(queue=queue, forever=forever)
-    ep.get_messages()
+    Deploy_EventProcessor(queues=queues).run()
 
 
 @mi.command(name="notification")
