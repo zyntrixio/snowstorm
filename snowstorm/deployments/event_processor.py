@@ -14,7 +14,7 @@ class Deploy_EventProcessor(ConsumerMixin):
         self.connection = Connection(str(settings.rabbitmq_dsn))
 
     def get_consumers(self, Consumer, channel):
-        return [Consumer(queues=self.queues, callbacks=[self.on_message])]
+        return [Consumer(queues=self.queues, auto_declare=False, callbacks=[self.on_message])]
 
     def on_message(self, body: dict, message: Message) -> None:
         logger.info(f"Processing event for queue: {message.delivery_info['exchange']}")
