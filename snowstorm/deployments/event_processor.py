@@ -17,7 +17,7 @@ class Deploy_EventProcessor(ConsumerMixin):
         return [Consumer(queues=self.queues, callbacks=[self.on_message])]
 
     def on_message(self, body: dict, message: Message) -> None:
-        logger.info("Processing event")
+        logger.info(f"Processing event for queue: {message.delivery_info['exchange']}")
         try:
             event_date_time = body.pop("event_date_time")
             event_type = body.pop("event_type")
