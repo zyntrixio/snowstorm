@@ -1,3 +1,5 @@
+"""FreshService Task."""
+
 from time import sleep
 
 import pendulum
@@ -9,14 +11,19 @@ from snowstorm.database import FreshService, engine
 from snowstorm.settings import settings
 
 
-class Job_FreshService:
+class FreshServiceStats:
+    """FreshService Stats Task."""
+
     def __init__(self, days: int, rate_limit_timeout: int) -> None:
+        """Initialize FreshServiceStats."""
         self.status_mapping = {2: "Open", 3: "Pending", 4: "Resolved", 5: "Closed"}
         self.days = days
         self.api_key = settings.freshservice_api_key
         self.rate_limit_timeout = rate_limit_timeout
 
     def fetch_stats(self) -> None:
+        """Fetch FreshService Stats."""
+        rate_limit_status_code = 429
         page = 1
         tickets = []
         while True:
@@ -29,15 +36,15 @@ class Job_FreshService:
                     "updated_since": pendulum.today().subtract(days=1, hours=1),
                 },
                 auth=(self.api_key, "X"),
+                timeout=5,
             )
-            if lookup.status_code == 429:
+            if lookup.status_code == rate_limit_status_code:
                 logger.warning(f"Rate limit hit, sleeping {self.rate_limit_timeout} seconds")
                 sleep(self.rate_limit_sleep)
                 continue
             if len(lookup.json()["tickets"]) != 0:
                 page += 1
-                for ticket in lookup.json()["tickets"]:
-                    tickets.append(ticket)
+                tickets = tickets + lookup.json()["tickets"]
             else:
                 logger.warning("No pages remaining", extra={"ticket_count": len(tickets)})
                 break
