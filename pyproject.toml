@@ -1,54 +1,44 @@
 [tool.poetry]
 name = "snowstorm"
 version = "0.0.0"
-description = "Implements mechanisms for shipping data from any service to the Bink Data Management Team"
+description = "Pulls data from Bink Applications for ingest into Data Warehouse."
 authors = ["Chris Pressland <cpressland@bink.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+snowstorm = "snowstorm:cli"
+
 [tool.poetry.dependencies]
-python = "^3.11"
-azure-monitor-query = "^1.2.0"
+python = "^3.12"
 azure-identity = "^1.15.0"
 sqlalchemy = "^2.0.23"
-pydantic = "^2.5.2"
-click = "^8.1.7"
 alembic = "^1.13.0"
 psycopg2-binary = "^2.9.9"
 requests = "^2.31.0"
 faker = "^20.1.0"
 redis = "^5.0.1"
-pendulum = "^2.1.2"
-fastapi = "^0.105.0"
-uvicorn = "^0.24.0.post1"
-jinja2 = "^3.1.2"
+pendulum = "^3.0.0"
 azure-storage-blob = "^12.19.0"
 loguru = "^0.7.2"
 kombu = "^5.3.4"
 pydantic-settings = "^2.1.0"
 prometheus-client = "^0.19.0"
-
+typer = { extras = ["all"], version = "^0.9.0" }
 
 [tool.poetry.group.dev.dependencies]
-isort = "^5.11.4"
-black = "^22.12.0"
-ruff = "^0.0.248"
-
-[tool.poetry.scripts]
-stormctl = "snowstorm.cli:cli"
-
-[tool.black]
-line-length = 120
-
-[tool.isort]
-line_length = 120
-profile = "black"
+ruff = "^0.2.2"
 
 [tool.ruff]
+select = ["ALL"]
+ignore = ["ANN101", "ANN204", "FA102", "S311"]
 line-length = 120
+
+[tool.ruff.per-file-ignores]
+"./snowstorm/alembic/*" = ["ALL"]
 
 [tool.poetry-dynamic-versioning]
 enable = true
 
 [build-system]
-requires = ["poetry-core", "poetry-dynamic-versioning"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"

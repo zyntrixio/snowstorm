@@ -1,3 +1,5 @@
+"""Main database module for Snowstorm."""
+
 from sqlalchemy import JSON, Boolean, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base
 
@@ -8,6 +10,8 @@ base = declarative_base()
 
 
 class APIStats(base):
+    """APIStats Table."""
+
     __tablename__ = "apistats"
 
     id = Column(String, primary_key=True)
@@ -23,6 +27,8 @@ class APIStats(base):
 
 
 class FreshService(base):
+    """FreshService Table."""
+
     __tablename__ = "freshservice"
 
     id = Column(Integer, primary_key=True, autoincrement=False)
@@ -36,6 +42,8 @@ class FreshService(base):
 
 
 class Events(base):
+    """Events Table."""
+
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True)
