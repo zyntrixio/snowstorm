@@ -51,16 +51,22 @@ class FreshServiceStats:
 
         with Session(engine) as session:
             for ticket in tickets:
-                sla = ticket["custom_fields"]["incident_sla_resolution"]
-                insert = FreshService(
-                    id=ticket["id"],
-                    created_at=ticket["created_at"],
-                    updated_at=ticket["updated_at"],
-                    status=self.status_mapping[ticket["status"]],
-                    channel=ticket["custom_fields"]["channel"] if ticket["custom_fields"]["channel"] != "N/A" else None,
-                    service=ticket["custom_fields"]["service"],
-                    mi=ticket["custom_fields"]["mi"],
-                    sla_breached=True if sla == "Breached" else False if sla == "Achieved" else None,
-                )
-                session.merge(insert)
+                try:
+                    sla = ticket["custom_fields"]["incident_sla_resolution"]
+                    insert = FreshService(
+                        id=ticket["id"],
+                        created_at=ticket["created_at"],
+                        updated_at=ticket["updated_at"],
+                        status=self.status_mapping[ticket["status"]],
+                        channel=ticket["custom_fields"]["channel"]
+                        if ticket["custom_fields"]["channel"] != "N/A"
+                        else None,
+                        service=ticket["custom_fields"]["service"],
+                        mi=ticket["custom_fields"]["mi"],
+                        sla_breached=True if sla == "Breached" else False if sla == "Achieved" else None,
+                    )
+                    session.merge(insert)
+                except KeyError:
+                    logger.error(f"KeyError: {ticket['id']}")
+                    continue
             session.commit()

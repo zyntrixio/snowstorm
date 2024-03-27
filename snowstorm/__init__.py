@@ -7,7 +7,7 @@ cli = typer.Typer()
 
 
 @cli.command()
-def database_cleanup(days: int) -> None:
+def database_cleanup(days: Annotated[int, typer.Option(help="Number of days to keep")]) -> None:
     """Remove old records from database."""
     from snowstorm.tasks.database_cleanup import DatabaseCleanup
 
@@ -24,7 +24,10 @@ def event_processor(queues: Annotated[str, typer.Option(help="Comma seperated li
 
 
 @cli.command()
-def event_create(queue: str, count: int) -> None:
+def event_create(
+    queue: Annotated[str, typer.Option(help="Name of the queue to populate")],
+    count: Annotated[int, typer.Option(help="Number of items to add")],
+) -> None:
     """Create fake events in RabbitMQ."""
     from snowstorm.tasks.events import EventCreate
 
@@ -33,7 +36,10 @@ def event_create(queue: str, count: int) -> None:
 
 
 @cli.command()
-def freshservice(days: int, rate_limit_timeout: str) -> None:
+def freshservice(
+    days: Annotated[int, typer.Option(help="Number of days worth of data to collect")],
+    rate_limit_timeout: Annotated[str, typer.Option(help="Rate limit timeout in seconds")],
+) -> None:
     """Collect Data from FreshService."""
     from snowstorm.tasks.freshservice import FreshServiceStats
 
