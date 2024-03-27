@@ -1,6 +1,7 @@
 """Pulls data from Olympus Applications for ingest into Data Warehouse."""
 
 import typer
+from typing_extensions import Annotated
 
 cli = typer.Typer()
 
@@ -15,7 +16,7 @@ def database_cleanup(days: int) -> None:
 
 
 @cli.command()
-def event_processor(queues: str) -> None:
+def event_processor(queues: Annotated[str, typer.Option(help="Comma seperated list of queues")]) -> None:
     """Collect Olympus Events from RabbitMQ."""
     from snowstorm.tasks.events import EventProcessor
 
