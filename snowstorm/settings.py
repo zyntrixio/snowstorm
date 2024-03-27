@@ -1,5 +1,6 @@
 """Main settings module for Snowstorm."""
 
+import sentry_sdk
 from pydantic import AmqpDsn, PostgresDsn
 from pydantic_settings import BaseSettings
 
@@ -21,3 +22,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+sentry_sdk.init(dsn="https://c0f93ff35f3484db0d55246b280523b8@o503751.ingest.us.sentry.io/4506984182448128")
