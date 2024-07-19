@@ -10,7 +10,7 @@ snowstorm = "snowstorm:cli"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-azure-identity = "^1.15.0"
+azure-identity = "^1.16.1"
 sqlalchemy = "^2.0.23"
 alembic = "^1.13.0"
 psycopg2-binary = "^2.9.9"
